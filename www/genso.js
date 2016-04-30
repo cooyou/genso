@@ -58,7 +58,10 @@ $(function() {
 
 function setAItems(){
    var i;
+
    for(i=1;i<=9;i++){
+   	 $(".scrlitem"+i).css("top",""+((i-1)*itemheight-2)+"px");
+   	 $(".scrlitem"+i).css("height",(itemheight)+"px");
      if(aindex-5+i>=0 && aindex-5+i<aary.length){
 	    $("p",".scrlitem"+i).html(aary[aindex-5+i]);
 	 }
@@ -327,6 +330,26 @@ function changeLevel(){
    }
    
 }
+
+function loadTextGet(fname,id){
+
+ 	$.get(fname, function(data){
+		$(id).text(data);
+	});
+	
+}
+
+function loadTextAjax(fname,id){
+	
+	$.ajax({
+		url:fname,
+		success: function(data){
+			$(id).text(data);
+		}
+	});
+	
+}
+
 
 
 function init(){
