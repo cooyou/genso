@@ -20,15 +20,20 @@ var fuseikai=0;
 var level=1;
 var isreverse=0;
 var timer=-1;
+
+var width,height;
+
+	
 var itemheight=23;
 var dummypheight=1000;
 
 var cvsw,cvsh;
+var scrlspeed=3.0;
 
 function funcDummyScrl(){
   var scrl=$('#dummy').scrollTop();
   
-  var curi=Math.floor(scrl/itemheight);
+  var curi=Math.floor(scrl/((itemheight)*scrlspeed));
   
   //console.log("scrl="+scrl+" curi="+curi);
   if(curi<0){
@@ -43,8 +48,42 @@ function funcDummyScrl(){
   
 }
 
+var mdwn=false;
+var cy=0;
+var scrltop;
+function aScrlDown(e){
+	mdwn=true;
+	scrltop=$('#dummy').scrollTop();
+	cy=e.clientY;
+}
+
+function aScrlUp(){
+	mdwn=false;
+}
+
+function aScrlMove(e){
+	if(mdwn){
+		
+		var y=e.clientY;
+		
+		var mv=cy-y;
+		
+		$('#dummy').scrollTop(scrltop+(mv*scrlspeed));
+		
+	}
+}
+
 
 $(function() {
+	console.log("jquery init");
+	width=$(window).width();
+	height=$(window).height();
+	cvsw=width*0.8;
+	cvsh=height*0.9;
+	$("#dummy").on("mousedown",aScrlDown);
+	$("#dummy").on("mousemove",aScrlMove);
+	$("#dummy").on("mouseup",aScrlUp);
+	$("#dummy").on("mouseleave",aScrlUp);
 	$(".btnshoot").on("touchenter",shoot);
 	$(".btnshoot").on("mousedown",shoot);
 	
@@ -54,7 +93,32 @@ $(function() {
 	$("#dummy").scroll(function() { 
 	  funcDummyScrl();
 	});
-			     
+	
+	$("body").keydown(function(e){
+	    console.log(e.keyCode);
+		var mv=itemheight;
+		if(e.shiftKey){
+			console.log("shift");
+			mv=mv*5;
+		}
+		var scrltop=$('#dummy').scrollTop();
+
+        switch(e.keyCode){
+
+ 			case 32: // space
+ 			console.log("shoot");
+ 				shoot();
+ 			break;
+ 			
+            case 38: // ↑
+            $('#dummy').scrollTop(scrltop+(-mv*scrlspeed));
+            break;
+ 
+            case 40: // ↓
+            $('#dummy').scrollTop(scrltop+(mv*scrlspeed));
+            break;
+        }
+    });		     
 });
 
 function setAItems(){
@@ -96,9 +160,9 @@ function frame(){
 	      wmove=0;
 	      carditemy=0;
 	      renzoku=0;
-	      $(".shootbar").css("top","85%");
-	      $(".shootbar").css("height","3%");
-	      $(".card").css("top","50%");
+	      $(".shootbar").css("top",""+(cvsh*0.85)+"px");
+	      $(".shootbar").css("height",""+(cvsh*0.03)+"px");
+	      $(".card").css("top",""+(cvsh*0.5)+"px");
 	      drawFooter();
 	      setCardItem();
 	      gstatus=1;
@@ -108,20 +172,20 @@ function frame(){
 	  
 	      if(shootindex==-1){
 	        if(t%10==0){//落ちる動き
-		      $(".card").css("top",""+(50+2*carditemy)+"%");
+		      $(".card").css("top",""+(cvsh*(0.5+0.02*carditemy))+"px");
 		      carditemy++;
 		    }
 		  }
 		  else{
 		    //バー上昇
-		    $(".shootbar").css("top",""+(88-(15*shootindex))+"%");
-		    $(".shootbar").css("height",""+(15*shootindex)+"%");
+		    $(".shootbar").css("top",""+(cvsh*(0.88-(0.15*shootindex)))+"px");
+		    $(".shootbar").css("height",""+(cvsh*(0.15*shootindex))+"px");
 		    if(wmove==0 && (88-(15*(shootindex-1)))>(50+2*carditemy) && (88-(15*shootindex))<=(50+2*carditemy)){
 		      wmove=1;
 		    }
 		    if(wmove==1){
 		        //バーとカードが一緒に上昇
-		        $(".card").css("top",""+(88-(15*shootindex)-5)+"%");
+		        $(".card").css("top",""+(cvsh*(0.88-(0.15*shootindex)-0.05))+"px");
 		    }
 		    shootindex++;
 		    if(shootindex==5){//上がり切った
@@ -286,7 +350,7 @@ function readcard(){
   	  
   	}
   }
-  dummypheight=itemheight*(aary.length+9);
+  dummypheight=itemheight*(aary.length*scrlspeed+9);
   console.log("itemheight="+itemheight+" length="+aary.length+" dummypheight="+dummypheight+"px");
   $('#dummyp').css("height",""+dummypheight+"px");
   $('#dummy').scrollTop(0);
@@ -354,7 +418,7 @@ function loadTextAjax(fname,id){
 
 
 function init(){
-	
+	console.log("javascript init");
 	setWHLT();
  //andjs.makeToast("test");
   t=0;
@@ -406,11 +470,7 @@ function funcShowMsg(msg){
 
 function setWHLT(){
 	//name : [width,height,left,top]
-	var width,height;
-	width=$(window).width();
-	height=$(window).height();
-	cvsw=width*0.8;
-	cvsh=height*0.9;
+
 	var whlt=
 	{	 ".header":[width*1.0,height*0.05,0,0]
 			,".notebtn":[width*1.0*1.0*0.1,height*0.05*0.8,width*1.0*0.85,height*0.05*0.05]
@@ -425,8 +485,8 @@ function setWHLT(){
 
 
 		,".cvs":[cvsw,cvsh,width*0.1,height*0.05]
-			,"#dummy":[cvsw*0.8*1.0,cvsh*0.9*0.5,0,0]
-				,"#dummyp":[cvsw*0.8*1.0*1.0,1000,0,0]
+			,"#dummy":[cvsw*1.0,cvsh*0.5,0,0]
+				,"#dummyp":[cvsw*0.001,1000,0,0]
 	
 		,".scrlbox":[cvsw*1.0,cvsh*0.5,0,0]
 			,"#scrlmk1l":[cvsw*0.1,cvsh*0.5*0.2,0,cvsh*0.5*0.28]

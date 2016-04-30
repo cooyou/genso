@@ -1,12 +1,18 @@
 # genso
 元素記号ゲーム  
-ver1.0.4 android app release
-PC版は開発中  
+ver1.0.4 android app release  
+ver1.0.5 release  
+
+PC版も動きます。
+マウスドラッグもしくは  
+キーボードの↓矢印上下(up,down)でスクロール(高速スクロールはshiftキー押しながら）  
+spaceキーで発射  
+<<<<<<< HEAD
+
+=======
+>>>>>>> 24dcd8e... ver1.0.5 release
 [ホームページ](http://cooyou.github.io/genso/)  
 
-現在のところChromeブラウザで主に動作確認してます。  
-(FireFoxでは動作しておりません。将来的に動作する予定） 
-それでも完全に動作しているわけではありません。  
-この動作がおかしいところを直しつつ、さらに機能アップしていく予定です。  
+さらに機能アップしていく予定です。  
 [ゲームページ](http://cooyou.github.io/genso/www/genso.html)  
 
