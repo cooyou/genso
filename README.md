@@ -1,7 +1,6 @@
 # genso
 元素記号ゲーム  
-ver1.0.4 android app release  
-ver1.0.5 release  
+ver1.0.6 release  
 
 PC版も動きます。
 マウスドラッグもしくは  
@@ -9,6 +8,5 @@ PC版も動きます。
 spaceキーで発射  
 [ホームページ](http://cooyou.github.io/genso/)  
 
-さらに機能アップしていく予定です。  
 [ゲームページ](http://cooyou.github.io/genso/www/genso.html)  
 
