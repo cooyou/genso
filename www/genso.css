@@ -219,7 +219,7 @@ div#hantei p{
 	z-index:95;
 }
 
-.qa textarea{
+.qatext{
 	background-color:lightyellow;
 	position:relative;
 	line-height: 1.5em;

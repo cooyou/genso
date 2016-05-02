@@ -17,6 +17,7 @@ var scrlheight=230;
 var seikai=0;
 var fuseikai=0;
 
+var levelnum=1;
 var level=1;
 var isreverse=0;
 var timer=-1;
@@ -332,9 +333,9 @@ function shuffleArray(ary) {
   return ary;
 }
 function readcard(){
-  var qatext=$(".qatext"+level).text();
+  var qatext=$(".qatext").eq(level-1).text();
   var qas=qatext.split("\n");
-  titlestr=qas[0].substring(3);
+
   
   
   qary.length=0;
@@ -372,19 +373,22 @@ function initqa(){
 }
 
 function drawHeader(){
+  var qatext=$(".qatext").eq(level-1).text();
+  var qas=qatext.split("\n");
+  titlestr=qas[0].substring(3);
+  
   $('p','.header').eq(0).html(titlestr+"　👆　");
 }
 
 function changeLevel(){
 
-  switch(level){
-    case 1:level=2;
-    break;
-    case 2:level=3;
-    break;
-    case 3:level=1;
-    break;
+   if(level+1<=levelnum){
+  	  level++;
    }
+   else{
+  	  level=1;
+   }
+
    init();
    initqa();
    
@@ -404,17 +408,36 @@ function loadTextGet(fname,id){
 	
 }
 
-function loadTextAjax(fname,id){
-	
+function loadTextAjax(fname,i){
+	var nostr=('00'+(i+1)).slice(-3);
+	var fullfname=(fname+nostr)+".sqa";
 	$.ajax({
-		url:fname,
+		type: 'GET',
+		dataType: 'text',
+		url:fullfname,
 		success: function(data){
-			$(id).text(data);
+			var qatext= $('<textarea class="qatext">\n'+data+'\n</textarea>');
+			$(".qa").append(qatext);
+			i++;
+			loadTextAjax(fname,i);
+		},
+		error: function(){
+			var qatextitem=$(".qatext");
+
+            levelnum=qatextitem.length;
+            
+            console.log("levelnum="+levelnum);
+   
+			init();
 		}
+		
 	});
 	
 }
 
+function initBody(){
+	loadTextAjax("qatext",0);
+}
 
 
 function init(){
@@ -446,16 +469,14 @@ function dispQA(){
 
   var dsp=$(".qa").css("display");
   if(dsp=="none"){
-	  $(".qatext"+1).css("display","none");
-	  $(".qatext"+2).css("display","none");
-	  $(".qatext"+3).css("display","none");
-	  $(".qatext"+level).css("display","block");
+  	  $(".qatext").css("display","none");
+  	  $(".qatext").eq(level-1).css("display","block");
 	  $(".qa").css("display","block");
    }
    else{
        $(".qa").css("display","none");
    }
-   init();
+
 }
 
 function funcShowMsg(msg){
